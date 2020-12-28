@@ -18,6 +18,7 @@
                 <thead>
                 <tr>
                     <th style="width: 10px">#</th>
+                    <th>Avatar</th>
                     <th>Username</th>
                     <th>Email</th>
                     <th>Phone</th>
@@ -29,6 +30,9 @@
                 <tbody>
                 <tr th:each="user: ${list}">
                     <td th:text="${user.getId()}"></td>
+                    <td>
+                        <img width="100" th:src="@{'/uploads/'+${user.getAvatar()}}" alt="">
+                    </td>
                     <td th:text="${user.getUsername()}"></td>
                     <td th:text="${user.getEmail()}"></td>
                     <td th:text="${user.getPhone()}"></td>

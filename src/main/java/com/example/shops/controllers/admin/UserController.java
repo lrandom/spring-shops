@@ -4,17 +4,28 @@ import com.example.shops.models.User;
 import com.example.shops.repository.UserJpa;
 import com.example.shops.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 @Controller
 public class UserController implements IController {
+    @Value("${config.upload_folder}")
+    private String UPLOAD_FOLDER;
     @Autowired
     UserService userService;
 
@@ -38,8 +49,31 @@ public class UserController implements IController {
 
     @Override
     @PostMapping("admin/user/postAdd")
-    public String postAdd(User user, RedirectAttributes attributes) {
+    public String postAdd(User user, RedirectAttributes attributes,
+                          @RequestParam(name = "file") MultipartFile file) {
         try {
+
+            Date date = new Date();
+            LocalDate localDate = date.toInstant()
+                    .atZone(ZoneId.systemDefault()).toLocalDate();
+            int year = localDate.getYear();
+            int month = localDate.getMonthValue();
+            File saveFolder = new File(UPLOAD_FOLDER+month+"_"+year);
+            //Users/mac/Desktop/uploads/12_2020
+
+            if(saveFolder.isFile() || !saveFolder.exists()){
+                saveFolder.mkdir();
+            }
+
+            byte[] bytes = file.getBytes();
+
+
+            String newFileName =saveFolder.getAbsolutePath()+"/"+ System.currentTimeMillis()+file.getOriginalFilename();
+            Path path = Paths.get(newFileName);
+            Files.write(path, bytes);
+
+
+            user.setAvatar(newFileName.replace(UPLOAD_FOLDER, ""));
             userService.save(user);
             attributes.addFlashAttribute("success", "Add successfully");
         } catch (Exception e) {

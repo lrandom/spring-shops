@@ -9,8 +9,6 @@
 <body>
 <div class="container-fluid" layout:fragment="content">
     <div class="card card-primary">
-
-
         <div class="card-header">
             <h3 class="card-title">Add</h3>
         </div>
@@ -24,7 +22,11 @@
         <br>
         <!-- /.card-header -->
         <!-- form start -->
-        <form role="form" th:object="${user}" th:action="@{/admin/user/postAdd}" method="post">
+        <form role="form" th:object="${user}"
+              th:action="@{/admin/user/postAdd}"
+              method="post"
+              enctype="multipart/form-data"
+        >
             <div class="card-body">
                 <div class="form-group">
                     <label>Username</label>
@@ -64,6 +66,18 @@
                     </select>
                 </div>
 
+                <div class="form-group">
+                    <!-- <label for="customFile">Custom File</label> -->
+                    <label>Avatar</label>
+                    <img alt="" class="preview" style="width: 200px; height: 200px;margin-left: 10px;
+    margin-bottom: 10px; display: none">
+
+                    <div class="custom-file">
+                        <input onchange="preview(this)" type="file" name="file" class="custom-file-input" id="customFile">
+                        <label class="custom-file-label" for="customFile">Choose file</label>
+                    </div>
+                </div>
+
             <!--    <div class="form-group">
                     <label for="exampleInputFile">File input</label>
                     <div class="input-group">
@@ -88,6 +102,25 @@
             </div>
         </form>
     </div>
+
+    <script type="text/javascript">
+
+        function preview(input){
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const previewNode = document.getElementsByClassName('preview')[0];
+                    previewNode.setAttribute('src',e.target.result);
+                    previewNode.style.display = "block";
+                }
+
+                reader.readAsDataURL(input.files[0]); // convert to base64 string
+            }
+        }
+
+    </script>
 </div>
+
 </body>
 </html>

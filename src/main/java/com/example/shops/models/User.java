@@ -32,4 +32,7 @@ public class User {
 
     @Column(name ="level")
     private int level;
+
+    @Column(name ="avatar")
+    private String avatar;
 }
