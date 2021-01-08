@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Helper {
-    public static final String getMd5(String input){
+    public static final String getMd5(String input) {
         try {
 
             // Static getInstance method is called with hashing MD5

@@ -5,6 +5,8 @@ import com.example.shops.repository.UserJpa;
 import com.example.shops.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-public class UserController implements IController {
+public class UserController implements IController<User> {
     @Value("${config.upload_folder}")
     private String UPLOAD_FOLDER;
     @Autowired
@@ -34,8 +36,15 @@ public class UserController implements IController {
 
     @Override
     @GetMapping("admin/user/list")
-    public String list(Model model) {
-        List<User> userList = userService.getUserList();
+    public String list(Model model, @RequestParam(defaultValue = "1") int page,
+                       @RequestParam(defaultValue = "2") int pageSize
+    ) {
+        Page userList = userService.getUserList(PageRequest.of(page - 1, pageSize));
+        long total = userService.total();
+        double totalPage = Math.ceil(total / pageSize);
+        model.addAttribute("totalPage", totalPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", pageSize);
         model.addAttribute("list", userList);
         return "backend/user/index";
     }
@@ -58,17 +67,17 @@ public class UserController implements IController {
                     .atZone(ZoneId.systemDefault()).toLocalDate();
             int year = localDate.getYear();
             int month = localDate.getMonthValue();
-            File saveFolder = new File(UPLOAD_FOLDER+month+"_"+year);
+            File saveFolder = new File(UPLOAD_FOLDER + month + "_" + year);
             //Users/mac/Desktop/uploads/12_2020
 
-            if(saveFolder.isFile() || !saveFolder.exists()){
+            if (saveFolder.isFile() || !saveFolder.exists()) {
                 saveFolder.mkdir();
             }
 
             byte[] bytes = file.getBytes();
 
 
-            String newFileName =saveFolder.getAbsolutePath()+"/"+ System.currentTimeMillis()+file.getOriginalFilename();
+            String newFileName = saveFolder.getAbsolutePath() + "/" + System.currentTimeMillis() + file.getOriginalFilename();
             Path path = Paths.get(newFileName);
             Files.write(path, bytes);
 

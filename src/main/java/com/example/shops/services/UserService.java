@@ -5,12 +5,13 @@ import com.example.shops.models.User;
 import com.example.shops.repository.UserJpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Service
 public class UserService {
@@ -19,14 +20,12 @@ public class UserService {
     @Autowired
     private UserJpa userJpa;
 
-    public List<User> getUserList() {
-        Iterable<User> it = userJpa.findAll();
-        List<User> users = new ArrayList<>();
-        for (User user : it
-        ) {
-            users.add(user);
-        }
-        return users;
+    public Page<User> getUserList(Pageable pageable) {
+        return userJpa.findAll(pageable);
+    }
+
+    public long total() {
+        return userJpa.getTotalUser();
     }
 
     public boolean save(User user) {
@@ -40,7 +39,6 @@ public class UserService {
         return true;
     }
 
-
     public User getUserById(Long id) {
         return userJpa.findById(id).get();
     }
@@ -48,12 +46,12 @@ public class UserService {
     public boolean delete(Long id) {
         try {
             User user = getUserById(id);
-            String avatar = UPLOAD_FOLDER+"/"+user.getAvatar();
+            String avatar = UPLOAD_FOLDER + "/" + user.getAvatar();
             File avatarFile = new File(avatar);
-            if(avatarFile.exists()){
+            if (avatarFile.exists()) {
                 try {
                     avatarFile.delete();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

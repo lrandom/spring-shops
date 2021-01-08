@@ -15,7 +15,7 @@ public class User {
     @Column(name = "username")
     private String username;
 
-    @Column(name="email")
+    @Column(name = "email")
     private String email;
 
     @Column(name = "fullname")
@@ -30,9 +30,9 @@ public class User {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name ="level")
+    @Column(name = "level")
     private int level;
 
-    @Column(name ="avatar")
+    @Column(name = "avatar")
     private String avatar;
 }
