@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/frontend.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="row" layout:fragment="content">
+    <table>
+        <th>
+            <td>Name</td>
+            <td>Price</td>
+            <td>Quantity</td>
+            <td>
+
+            </td>
+        </th>
+
+        <tr th:each="cartItem : ${cartItems}">
+            <td th:text="${cartItem.getProduct().getName()}"></td>
+            <td th:text="${cartItem.getProduct().getPrice()}"></td>
+            <td th:text="${cartItem.getQuantity()}"></td>
+            <td>
+                <a th:href="@{/update-quantity(id=${cartItem.getProduct().getId()},step=1)}">+</a>
+                <a th:href="@{/update-quantity(id=${cartItem.getProduct().getId()},step=-1)}">-</a>
+            </td>
+        </tr>
+    </table>
+
+</div>
+</body>
+</html>

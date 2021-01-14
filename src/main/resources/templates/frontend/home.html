@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/frontend.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="row" layout:fragment="content">
+    <div th:each="product: ${products}" class="card" style="width: 18rem;">
+        <img src="..." class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title" th:text="*{product.getName()}"></h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p th:text="*{product.getPrice()}"></p>
+            <a th:href="@{/add-to-cart(id=*{product.getId()})}" class="btn btn-primary">Add to cart</a>
+        </div>
+
+<!--        <div th:each="item : ${items}">
+            <div th:text="${item}"></div>
+        </div>
+
+        <p th:text="#{greeting}"></p>-->
+    </div>
+</div>
+</body>
+</html>
